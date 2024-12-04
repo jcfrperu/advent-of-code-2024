@@ -48,7 +48,7 @@ func solutionPart02(lines []string) {
 	fmt.Printf("%d", dif)
 }
 
-// https://adventofcode.com/2023/day/1
+// https://adventofcode.com/2024/day/1
 func main() {
 	// part 01: using string or input file
 	//RunAdventOfCodeWithString(solutionPart01, "3   4\n4   3\n2   5\n1   3\n3   9\n3   3")
