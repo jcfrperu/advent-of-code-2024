@@ -7,16 +7,16 @@ import (
 )
 
 func solutionPart01(lines []string) {
-	var unsavedCounter = 0
+	unsavedCounter := 0
 	for _, line := range lines {
-		var report = SplitInts(line, " ")
+		report := SplitInts(line, " ")
 
-		var ascCounter = 0
-		var descCounter = 0
-		var equalsCounter = 0
-		var isResolved = false
+		ascCounter := 0
+		descCounter := 0
+		equalsCounter := 0
+		isResolved := false
 		for i := 0; i < len(report)-1; i++ {
-			var diff = report[i+1] - report[i]
+			diff := report[i+1] - report[i]
 
 			if abs(diff) >= 4 {
 				unsavedCounter++
@@ -32,29 +32,26 @@ func solutionPart01(lines []string) {
 				}
 			}
 		}
-
 		if !isResolved {
 			if (ascCounter > 0 && descCounter > 0) || equalsCounter > 0 {
 				unsavedCounter++
 			}
 		}
 	}
-
-	var saveCounter = len(lines) - unsavedCounter
+	saveCounter := len(lines) - unsavedCounter
 	fmt.Printf("%d", saveCounter)
 }
 
 func isSafe(report []int) bool {
-	var ascCounter = 0
-	var descCounter = 0
-	var equalsCounter = 0
+	ascCounter := 0
+	descCounter := 0
+	equalsCounter := 0
 	for i := 0; i < len(report)-1; i++ {
-		var diff = report[i+1] - report[i]
+		diff := report[i+1] - report[i]
 
 		if abs(diff) >= 4 {
 			return false
 		}
-
 		if diff > 0 {
 			ascCounter++
 		} else if diff < 0 {
@@ -70,22 +67,21 @@ func isSafe(report []int) bool {
 }
 
 func solutionPart02(lines []string) {
-	var saveCounter = 0
+	saveCounter := 0
 	for _, line := range lines {
-		var report = SplitInts(line, " ")
-		var reportSize = len(report)
+		report := SplitInts(line, " ")
+		reportSize := len(report)
 
 		if isSafe(report) {
 			saveCounter++
 		} else {
 			for i := 0; i < reportSize; i++ {
-				var newReport = make([]int, 0)
+				newReport := make([]int, 0)
 				for j := 0; j < reportSize; j++ {
 					if j != i {
 						newReport = append(newReport, report[j])
 					}
 				}
-
 				if isSafe(newReport) {
 					saveCounter++
 					break
@@ -108,5 +104,5 @@ func main() {
 
 	// part 02: using string or input file
 	//RunAdventOfCodeWithString(solutionPart02, "7 6 4 2 1\n1 2 7 8 9\n9 7 6 2 1\n1 3 2 4 5\n8 6 4 4 1\n1 3 6 7 9")
-	RunAdventOfCodeWithFile(solutionPart02, "day_02/testcases/input-part-01.txt")
+	RunAdventOfCodeWithFile(solutionPart02, "day_02/testcases/input-part-02.txt")
 }

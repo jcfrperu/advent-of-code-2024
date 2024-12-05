@@ -8,8 +8,8 @@ import (
 )
 
 func solutionPart01(lines []string) {
-	var left = make([]int, 0)
-	var right = make([]int, 0)
+	left := make([]int, 0)
+	right := make([]int, 0)
 
 	for _, line := range lines {
 		parts := Split(line, " ")
@@ -20,7 +20,7 @@ func solutionPart01(lines []string) {
 	slices.Sort(left)
 	slices.Sort(right)
 
-	var dif float64
+	dif := float64(0)
 	for i := 0; i < len(left); i++ {
 		dif += math.Abs(float64(left[i] - right[i]))
 	}
@@ -29,8 +29,8 @@ func solutionPart01(lines []string) {
 }
 
 func solutionPart02(lines []string) {
-	var left = make([]int, 0)
-	var right = make([]int, 0)
+	left := make([]int, 0)
+	right := make([]int, 0)
 
 	for _, line := range lines {
 		parts := Split(line, " ")
@@ -38,9 +38,9 @@ func solutionPart02(lines []string) {
 		right = append(right, ParseInt(parts[3]))
 	}
 
-	var rightFreq, _, _, _ = Freq(right, true)
+	rightFreq, _, _, _ := Freq(right, true)
 
-	var dif int
+	dif := 0
 	for i := 0; i < len(left); i++ {
 		dif += left[i] * rightFreq[left[i]]
 	}

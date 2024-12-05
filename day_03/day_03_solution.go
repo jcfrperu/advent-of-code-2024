@@ -7,67 +7,70 @@ import (
 	"strings"
 )
 
+var EMPTY = ""
+
 func solutionPart01(lines []string) {
-	var sum = 0
-	for _, line := range lines {
-		var re = regexp.MustCompile(`mul\(\d{1,3},\d{1,3}\)`)
-		var matches = re.FindAllString(line, -1)
-		var clean string
-		for _, match := range matches {
-			clean = strings.ReplaceAll(match, "(", "")
-			clean = strings.ReplaceAll(clean, ")", "")
-			clean = strings.ReplaceAll(clean, ",", " ")
-			clean = strings.ReplaceAll(clean, "mul", "")
-			var numbers = SplitInts(clean, " ")
-			sum += numbers[0] * numbers[1]
-		}
-	}
-	fmt.Printf("%d", sum)
+	line := joinStrings(lines, EMPTY)
+	product := findProduct(line)
+	fmt.Printf("%d", product)
+}
+
+func solutionPart02(lines []string) {
+	line := joinStrings(lines, EMPTY)
+	cleanLine := removeBlocks(line, "don't()", "do()")
+	product := findProduct(cleanLine)
+	fmt.Printf("%d", product)
 }
 
 func findProduct(line string) int {
-	// PRECONDITION: line must not contains `don't()`
-	var sum = 0
-	var re = regexp.MustCompile(`mul\(\d{1,3},\d{1,3}\)`)
-	var matches = re.FindAllString(line, -1)
-	var clean string
+	sum := 0
+	re := regexp.MustCompile(`mul\(\d{1,3},\d{1,3}\)`)
+	matches := re.FindAllString(line, -1)
+	clean := EMPTY
 	for _, match := range matches {
-		clean = strings.ReplaceAll(match, "(", "")
-		clean = strings.ReplaceAll(clean, ")", "")
-		clean = strings.ReplaceAll(clean, ",", " ")
-		clean = strings.ReplaceAll(clean, "mul", "")
-		var numbers = SplitInts(clean, " ")
+		clean = strings.ReplaceAll(match, "mul(", EMPTY)
+		clean = strings.ReplaceAll(clean, ")", EMPTY)
+		numbers := SplitInts(clean, ",")
 		sum += numbers[0] * numbers[1]
 	}
 	return sum
 }
 
-func solutionPart02(lines []string) {
-	var sum = 0
-	var on = true
-	for _, line := range lines {
-		var re = regexp.MustCompile(`do\(\)|don't\(\)|mul\(\d{1,3},\d{1,3}\)`)
-		var matches = re.FindAllString(line, -1)
-		var clean string
+func removeBlocks(input string, startPattern string, endPattern string) string {
+	line := input
+	startIndex := indexAt(line, startPattern, 0)
+	for startIndex >= 0 {
+		endIndex := indexAt(line, endPattern, startIndex)
+		if endIndex >= 0 && endIndex >= startIndex {
+			line = line[:startIndex] + line[endIndex:]
+		} else {
+			line = line[0:startIndex]
+		}
+		startIndex = indexAt(line, startPattern, 0)
+	}
+	return line
+}
 
-		for _, match := range matches {
-			if match == "do()" {
-				on = true
-			} else if match == "don't()" {
-				on = false
-			} else {
-				if on {
-					clean = strings.ReplaceAll(match, "(", "")
-					clean = strings.ReplaceAll(clean, ")", "")
-					clean = strings.ReplaceAll(clean, ",", " ")
-					clean = strings.ReplaceAll(clean, "mul", "")
-					var numbers = SplitInts(clean, " ")
-					sum += numbers[0] * numbers[1]
-				}
-			}
+func joinStrings(lines []string, separator string) string {
+	line := EMPTY
+	for i, item := range lines {
+		if i == 0 {
+			line = item
+		} else {
+			line = line + separator + item
 		}
 	}
-	fmt.Printf("%d", sum)
+	return line
+}
+
+func indexAt(s, substr string, fromIndex int) int {
+	if fromIndex >= 0 && fromIndex < len(s) {
+		index := strings.Index(s[fromIndex:], substr)
+		if index >= 0 {
+			return index + fromIndex
+		}
+	}
+	return -1
 }
 
 // https://adventofcode.com/2024/day/3
