@@ -3,5 +3,5 @@ module advent-of-code-2024
 go 1.21.5
 
 require (
-	github.com/jcfrperu/go-competitive-programming v1.2.4
+	github.com/jcfrperu/go-competitive-programming v1.2.5
 )

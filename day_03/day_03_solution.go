@@ -10,13 +10,13 @@ import (
 var EMPTY = ""
 
 func solutionPart01(lines []string) {
-	line := joinStrings(lines, EMPTY)
+	line := strings.Join(lines, EMPTY)
 	product := findProduct(line)
 	fmt.Printf("%d", product)
 }
 
 func solutionPart02(lines []string) {
-	line := joinStrings(lines, EMPTY)
+	line := strings.Join(lines, EMPTY)
 	cleanLine := removeBlocks(line, "don't()", "do()")
 	product := findProduct(cleanLine)
 	fmt.Printf("%d", product)
@@ -38,39 +38,17 @@ func findProduct(line string) int {
 
 func removeBlocks(input string, startPattern string, endPattern string) string {
 	line := input
-	startIndex := indexAt(line, startPattern, 0)
+	startIndex := IndexAt(line, startPattern, 0)
 	for startIndex >= 0 {
-		endIndex := indexAt(line, endPattern, startIndex)
+		endIndex := IndexAt(line, endPattern, startIndex)
 		if endIndex >= 0 && endIndex >= startIndex {
 			line = line[:startIndex] + line[endIndex:]
 		} else {
 			line = line[0:startIndex]
 		}
-		startIndex = indexAt(line, startPattern, 0)
+		startIndex = IndexAt(line, startPattern, 0)
 	}
 	return line
-}
-
-func joinStrings(lines []string, separator string) string {
-	line := EMPTY
-	for i, item := range lines {
-		if i == 0 {
-			line = item
-		} else {
-			line = line + separator + item
-		}
-	}
-	return line
-}
-
-func indexAt(s, substr string, fromIndex int) int {
-	if fromIndex >= 0 && fromIndex < len(s) {
-		index := strings.Index(s[fromIndex:], substr)
-		if index >= 0 {
-			return index + fromIndex
-		}
-	}
-	return -1
 }
 
 // https://adventofcode.com/2024/day/3
