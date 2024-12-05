@@ -1,4 +1,10 @@
-github.com/jcfrperu/go-competitive-programming v1.2.4 h1:U+dbUfDajpDnbWRX004O+rp/8MChFdMwnOoanycyftE=
-github.com/jcfrperu/go-competitive-programming v1.2.4/go.mod h1:LdFn+0iw+kBGyfszwWxvs/CmSZUIn+lvvA8Q76eNiFg=
-github.com/jcfrperu/go-competitive-programming v1.2.5 h1:60MXBJL87PPCIZi39CyobVKTgl1vA4Llr+L8EkSIwOI=
-github.com/jcfrperu/go-competitive-programming v1.2.5/go.mod h1:LdFn+0iw+kBGyfszwWxvs/CmSZUIn+lvvA8Q76eNiFg=
+github.com/jcfrperu/go-competitive-programming v1.3.0 h1:SdjgbnQt2sR+75XGXWZyz3JNZcXo2PznGHa58jZa6zM=
+github.com/jcfrperu/go-competitive-programming v1.3.0/go.mod h1:LdFn+0iw+kBGyfszwWxvs/CmSZUIn+lvvA8Q76eNiFg=
+github.com/jcfrperu/go-competitive-programming v1.3.1 h1:JLpnrd5SajoWUG0bqrAoNDED58X7ZGFpx3hzpY67yE8=
+github.com/jcfrperu/go-competitive-programming v1.3.1/go.mod h1:LdFn+0iw+kBGyfszwWxvs/CmSZUIn+lvvA8Q76eNiFg=
+github.com/jcfrperu/go-competitive-programming v1.3.2 h1:z4/xIOjfqgkV6VF00+wHRDfW30OSr0u+QPWM9DOUOiA=
+github.com/jcfrperu/go-competitive-programming v1.3.2/go.mod h1:LdFn+0iw+kBGyfszwWxvs/CmSZUIn+lvvA8Q76eNiFg=
+github.com/jcfrperu/go-competitive-programming v1.3.3 h1:O5G2aDbcxWZbre2FElDxSpBvypIGWlYKDezJFf04Mko=
+github.com/jcfrperu/go-competitive-programming v1.3.3/go.mod h1:LdFn+0iw+kBGyfszwWxvs/CmSZUIn+lvvA8Q76eNiFg=
+github.com/jcfrperu/go-competitive-programming v1.3.4 h1:m6oNt0FBvdK4qOVRlvEyn2PKu+fSXqLxKyd+a3NK52k=
+github.com/jcfrperu/go-competitive-programming v1.3.4/go.mod h1:LdFn+0iw+kBGyfszwWxvs/CmSZUIn+lvvA8Q76eNiFg=
