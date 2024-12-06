@@ -15,11 +15,11 @@ func solutionPart01(lines []string) {
 	// possible status: ^ > v <
 	maxIter := 10000
 	for currentNode.IsValid() && maxIter >= 0 {
-		nextNode := peek(currentNode, &m)
-		if nextNode.Value == "#" {
+		nextNode := peek(currentNode, m)
+		if nextNode.Value == "#" || nextNode.Value == "0" {
 			currentNode = turn90(currentNode)
 		} else {
-			currentNode = move(currentNode, &m)
+			currentNode = move(currentNode, m)
 			routes[getPosKey(currentNode)]++
 		}
 		maxIter--
@@ -40,9 +40,12 @@ func solutionPart02(lines []string) {
 	// super force brute :P
 	for i := 0; i < m.GetRowSize(); i++ {
 		for j := 0; j < m.GetColSize(); j++ {
-			m[i][j].Value = "#" // making walls in every single position xD
-			fmt.Printf("%v\n", m[i][j])
-			if isLoop(&m, node) {
+			if m[i][j].Value != "." {
+				continue
+			}
+			m[i][j].Value = "0" // making walls in every single position xD
+
+			if isLoop(m, node) {
 				loopsCounter++
 			}
 			m[i][j].Value = "."
@@ -51,20 +54,19 @@ func solutionPart02(lines []string) {
 	fmt.Printf("%d", loopsCounter)
 }
 
-func isLoop(m *Matrix[string], node Node[string]) bool {
+func isLoop(m Matrix[string], node Node[string]) bool {
 	routes := make(map[string]int)
 	routes[getPosKey(node)]++
 
 	maxIter := 10000
 	for node.IsValid() && maxIter >= 0 {
 		nextNode := peek(node, m)
-		if nextNode.Value == "#" {
+		if nextNode.Value == "#" || nextNode.Value == "0" {
 			node = turn90(node)
 		} else {
 			node = move(node, m)
-			routes[getPosKey(node)]++
-			if routes[getPosKey(node)] > 1 {
-				//fmt.Printf("%v\n", node)
+			routes[getPosAndDirKey(node)]++
+			if routes[getPosAndDirKey(node)] > 1 {
 				return true // return a known point in grid
 			}
 		}
@@ -76,8 +78,22 @@ func isLoop(m *Matrix[string], node Node[string]) bool {
 	return false
 }
 
+func printMatrix(m Matrix[string]) {
+	for i := 0; i < m.GetRowSize(); i++ {
+		for j := 0; j < m.GetColSize(); j++ {
+			fmt.Printf("%s", m[i][j].Value)
+		}
+		fmt.Printf("\n")
+	}
+	fmt.Printf("\n")
+}
+
 func getPosKey(node Node[string]) string {
 	return strconv.Itoa(node.Row) + "|" + strconv.Itoa(node.Col)
+}
+
+func getPosAndDirKey(node Node[string]) string {
+	return strconv.Itoa(node.Row) + "|" + strconv.Itoa(node.Col) + "|" + node.Value
 }
 
 func turn90(node Node[string]) Node[string] {
@@ -100,7 +116,7 @@ func turn90(node Node[string]) Node[string] {
 	return node
 }
 
-func peek(node Node[string], m *Matrix[string]) Node[string] {
+func peek(node Node[string], m Matrix[string]) Node[string] {
 	if node.Value == "^" {
 		return m.GetUp(node.Row, node.Col)
 	}
@@ -118,7 +134,7 @@ func peek(node Node[string], m *Matrix[string]) Node[string] {
 	return node
 }
 
-func move(node Node[string], m *Matrix[string]) Node[string] {
+func move(node Node[string], m Matrix[string]) Node[string] {
 	if node.Value == "^" {
 		n := m.GetUp(node.Row, node.Col)
 		n.Value = node.Value
