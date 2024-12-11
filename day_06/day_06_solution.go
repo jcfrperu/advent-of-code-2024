@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	. "github.com/jcfrperu/go-competitive-programming"
-	"strconv"
 )
 
 func solutionPart01(lines []string) {
-	m, currentNode := buildStringMatrix(lines)
+	m := BuildStrMatrix(lines)
+	currentNode := findStartNode(m)
 	routes := make(map[string]int)
 
 	routes[getPosKey(currentNode)]++
@@ -35,11 +35,12 @@ func solutionPart01(lines []string) {
 }
 
 func solutionPart02(lines []string) {
-	m, node := buildStringMatrix(lines)
+	m := BuildStrMatrix(lines)
+	node := findStartNode(m)
 	loopsCounter := 0
 	// super force brute :P
-	for i := 0; i < m.GetRowSize(); i++ {
-		for j := 0; j < m.GetColSize(); j++ {
+	for i := 0; i < m.Rows(); i++ {
+		for j := 0; j < m.Cols(); j++ {
 			if m[i][j].Value != "." {
 				continue
 			}
@@ -78,115 +79,85 @@ func isLoop(m Matrix[string], node Node[string]) bool {
 	return false
 }
 
-func printMatrix(m Matrix[string]) {
-	for i := 0; i < m.GetRowSize(); i++ {
-		for j := 0; j < m.GetColSize(); j++ {
-			fmt.Printf("%s", m[i][j].Value)
-		}
-		fmt.Printf("\n")
-	}
-	fmt.Printf("\n")
-}
-
 func getPosKey(node Node[string]) string {
-	return strconv.Itoa(node.Row) + "|" + strconv.Itoa(node.Col)
+	return FormatInt(node.Row) + "|" + FormatInt(node.Col)
 }
 
 func getPosAndDirKey(node Node[string]) string {
-	return strconv.Itoa(node.Row) + "|" + strconv.Itoa(node.Col) + "|" + node.Value
+	return FormatInt(node.Row) + "|" + FormatInt(node.Col) + "|" + node.Value
 }
 
 func turn90(node Node[string]) Node[string] {
 	if node.Value == "^" {
-		node.Value = ">"
-		return node
+		return node.Update(">")
 	}
 	if node.Value == ">" {
-		node.Value = "v"
-		return node
+		return node.Update("v")
 	}
 	if node.Value == "v" {
-		node.Value = "<"
-		return node
+		return node.Update("<")
 	}
 	if node.Value == "<" {
-		node.Value = "^"
-		return node
+		return node.Update("^")
 	}
 	return node
 }
 
 func peek(node Node[string], m Matrix[string]) Node[string] {
 	if node.Value == "^" {
-		return m.GetUp(node.Row, node.Col)
+		return m.GetUp(node)
 	}
 	if node.Value == ">" {
-		return m.GetRight(node.Row, node.Col)
+		return m.GetRight(node)
 
 	}
 	if node.Value == "v" {
-		return m.GetDown(node.Row, node.Col)
+		return m.GetDown(node)
 
 	}
 	if node.Value == "<" {
-		return m.GetLeft(node.Row, node.Col)
+		return m.GetLeft(node)
 	}
 	return node
 }
 
 func move(node Node[string], m Matrix[string]) Node[string] {
 	if node.Value == "^" {
-		n := m.GetUp(node.Row, node.Col)
-		n.Value = node.Value
-		return n
+		return m.GetUp(node).Update(node.Value)
 	}
 	if node.Value == ">" {
-		n := m.GetRight(node.Row, node.Col)
-		n.Value = node.Value
-		return n
+		return m.GetRight(node).Update(node.Value)
 
 	}
 	if node.Value == "v" {
-		n := m.GetDown(node.Row, node.Col)
-		n.Value = node.Value
-		return n
+		return m.GetDown(node).Update(node.Value)
 
 	}
 	if node.Value == "<" {
-		n := m.GetLeft(node.Row, node.Col)
-		n.Value = node.Value
-		return n
+		return m.GetLeft(node).Update(node.Value)
 	}
 	fmt.Printf("invalid move")
 	return node
 }
 
-func buildStringMatrix(lines []string) (Matrix[string], Node[string]) {
-	rowSize := len(lines)
-	colSize := len(lines[0])
+func findStartNode(m Matrix[string]) Node[string] {
+	rows := m.Rows()
+	cols := m.Cols()
 
 	startPoint := Node[string]{}
 
-	matrix := make([][]Node[string], rowSize)
-	for i := 0; i < rowSize; i++ {
-		matrix[i] = make([]Node[string], colSize)
-		for j := 0; j < colSize; j++ {
-			value := string(lines[i][j])
-			if value == "^" {
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			if m[i][j].Value == "^" {
 				startPoint = Node[string]{
-					Value: value,
+					Value: m[i][j].Value,
 					Row:   i,
 					Col:   j,
 				}
 			}
-			matrix[i][j] = Node[string]{
-				Value: value,
-				Row:   i,
-				Col:   j,
-			}
 		}
 	}
-	return matrix, startPoint
+	return startPoint
 }
 
 // https://adventofcode.com/2024/day/6

@@ -53,7 +53,7 @@ func removeBlocks(input string, startPattern string, endPattern string) string {
 
 // https://adventofcode.com/2024/day/3
 func main() {
-	// part 01: using string or input fileÑ/
+	// part 01: using string or input file
 	//RunAdventOfCodeWithString(solutionPart01, "mul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))")
 	//RunAdventOfCodeWithFile(solutionPart01, "day_03/testcases/input-part-01.txt")
 

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	. "github.com/jcfrperu/go-competitive-programming"
-	"strconv"
 )
 
 type AntennaSet struct {
@@ -55,52 +54,36 @@ func solutionPart01(lines []string) {
 					}
 				}
 
-				if m.IsValid(antinode01.Row, antinode01.Col) {
+				if m.IsValid(antinode01) {
 					antinodes[buildKey(antinode01)] = antinode01
 				}
-				if m.IsValid(antinode02.Row, antinode02.Col) {
+
+				if m.IsValid(antinode02) {
 					antinodes[buildKey(antinode02)] = antinode02
 				}
 			}
 		}
 	}
 
-	//printMatrix(m)
-	//for _, antinode := range antinodes {
-	//	fmt.Printf("%v\n", antinode)
-	//	m[antinode.Row][antinode.Col].Value = antinode.Value
-	//}
-	//printMatrix(m)
-
 	fmt.Printf("%d\n", len(antinodes))
 }
 
 func buildKey(node Node[string]) string {
-	return strconv.Itoa(node.Row) + "|" + strconv.Itoa(node.Col)
+	return FormatInt(node.Row) + "|" + FormatInt(node.Col)
 }
 
 func buildKeyWithAntenna(node Node[string], antennaType string) string {
-	return strconv.Itoa(node.Row) + "|" + strconv.Itoa(node.Col) + "|" + antennaType
-}
-
-func printMatrix(m Matrix[string]) {
-	fmt.Printf("\n")
-	for i := 0; i < m.GetRowSize(); i++ {
-		for j := 0; j < m.GetColSize(); j++ {
-			fmt.Printf(m[i][j].Value)
-		}
-		fmt.Printf("\n")
-	}
+	return FormatInt(node.Row) + "|" + FormatInt(node.Col) //+ "|" + antennaType
 }
 
 func readInput(lines []string) (map[string]AntennaSet, Matrix[string]) {
 	antennas := make(map[string]AntennaSet)
 	antennasType := make(map[string]string)
 
-	m := BuildStringMatrix(lines)
+	m := BuildStrMatrix(lines)
 
-	rows := m.GetRowSize()
-	cols := m.GetColSize()
+	rows := m.Rows()
+	cols := m.Cols()
 	for r := 0; r < rows; r++ {
 		for c := 0; c < cols; c++ {
 			if m[r][c].Value != "." {
@@ -127,19 +110,12 @@ func readInput(lines []string) (map[string]AntennaSet, Matrix[string]) {
 func solutionPart02(lines []string) {
 	antennas, m := readInput(lines)
 	antinodes := make(map[string]Node[string])
+	//antennasAntiNode := make(map[string]Node[string])
 	for _, antenna := range antennas {
 		for i := 0; i < len(antenna.List)-1; i++ {
 			for j := i + 1; j < len(antenna.List); j++ {
 				node01 := antenna.List[i]
 				node02 := antenna.List[j]
-
-				//if Abs(node02.Row, node01.Row) == 0 {
-				//	continue
-				//}
-				//
-				//if Abs(node02.Col, node01.Col) == 0 {
-				//	continue
-				//}
 
 				var antinode01 Node[string]
 				var antinode02 Node[string]
@@ -151,7 +127,7 @@ func solutionPart02(lines []string) {
 						Row:   node01.Row - Abs(node02.Row, node01.Row),
 						Col:   node01.Col - Abs(node02.Col, node01.Col),
 					}
-					if m.IsValid(antinode01.Row, antinode01.Col) {
+					if m.IsValid(antinode01) {
 						antinodes[buildKeyWithAntenna(antinode01, antenna.AntennaType)] = antinode01
 						// add # as many at top+left
 						top, bottom := clone(antinode01), clone(node01)
@@ -160,7 +136,7 @@ func solutionPart02(lines []string) {
 							Row:   top.Row - Abs(bottom.Row, top.Row),
 							Col:   top.Col - Abs(bottom.Col, top.Col),
 						}
-						for m.IsValid(potential.Row, potential.Col) {
+						for m.IsValid(potential) {
 							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
 							top, bottom = clone(potential), clone(top)
 							potential = Node[string]{
@@ -177,7 +153,7 @@ func solutionPart02(lines []string) {
 						Row:   node02.Row + Abs(node02.Row, node01.Row),
 						Col:   node02.Col + Abs(node02.Col, node01.Col),
 					}
-					if m.IsValid(antinode02.Row, antinode02.Col) {
+					if m.IsValid(antinode02) {
 						antinodes[buildKeyWithAntenna(antinode02, antenna.AntennaType)] = antinode02
 						// add # as many at bottom+right
 						top, bottom := clone(node02), clone(antinode02)
@@ -186,7 +162,7 @@ func solutionPart02(lines []string) {
 							Row:   bottom.Row + Abs(bottom.Row, top.Row),
 							Col:   bottom.Col + Abs(bottom.Col, top.Col),
 						}
-						for m.IsValid(potential.Row, potential.Col) {
+						for m.IsValid(potential) {
 							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
 							top, bottom = clone(bottom), clone(potential)
 							potential = Node[string]{
@@ -204,7 +180,7 @@ func solutionPart02(lines []string) {
 						Row:   node01.Row - Abs(node02.Row, node01.Row),
 						Col:   node01.Col + Abs(node02.Col, node01.Col),
 					}
-					if m.IsValid(antinode01.Row, antinode01.Col) {
+					if m.IsValid(antinode01) {
 						antinodes[buildKeyWithAntenna(antinode01, antenna.AntennaType)] = antinode01
 						// at many at right+top
 						top, bottom := clone(antinode01), clone(node01)
@@ -213,7 +189,7 @@ func solutionPart02(lines []string) {
 							Row:   top.Row - Abs(bottom.Row, top.Row),
 							Col:   top.Col + Abs(bottom.Col, top.Col),
 						}
-						for m.IsValid(potential.Row, potential.Col) {
+						for m.IsValid(potential) {
 							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
 							top, bottom = clone(potential), clone(top)
 							potential = Node[string]{
@@ -229,7 +205,7 @@ func solutionPart02(lines []string) {
 						Row:   node02.Row + Abs(node02.Row, node01.Row),
 						Col:   node02.Col - Abs(node02.Col, node01.Col),
 					}
-					if m.IsValid(antinode02.Row, antinode02.Col) {
+					if m.IsValid(antinode02) {
 						antinodes[buildKeyWithAntenna(antinode02, antenna.AntennaType)] = antinode02
 						// at many at left+bottom
 						top, bottom := clone(node02), clone(antinode02)
@@ -238,7 +214,7 @@ func solutionPart02(lines []string) {
 							Row:   bottom.Row + Abs(bottom.Row, top.Row),
 							Col:   bottom.Col - Abs(bottom.Col, top.Col),
 						}
-						for m.IsValid(potential.Row, potential.Col) {
+						for m.IsValid(potential) {
 							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
 							top, bottom = clone(bottom), clone(potential)
 							potential = Node[string]{
@@ -248,20 +224,22 @@ func solutionPart02(lines []string) {
 							}
 						}
 					}
-
 				}
 			}
 		}
 	}
 
-	printMatrix(m)
+	// finding extra
+	PrintStrMatrix(m)
 	for _, antinode := range antinodes {
-		//fmt.Printf("%v\n", antinode)
+		fmt.Printf("%v\n", antinode)
 		m[antinode.Row][antinode.Col].Value = antinode.Value
 	}
-	printMatrix(m)
+	PrintStrMatrix(m)
 
 	fmt.Printf("%d\n", len(antinodes))
+	//fmt.Printf("%d\n", extraCounter)
+	//fmt.Printf("%d\n", len(antinodes)+extraCounter)
 }
 
 func clone(node Node[string]) Node[string] {
