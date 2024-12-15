@@ -91,6 +91,46 @@ func calculateSafetyFactor(m *Matrix[string]) int64 {
 	return int64(factor01) * int64(factor02) * int64(factor03) * int64(factor04)
 }
 
+func closenessMetric(robots []Robot) int {
+	posMap := make(map[string]int)
+	for i := range robots {
+		posMap[buildKey(robots[i])]++
+	}
+
+	inMap := func(key string) bool {
+		_, ok := posMap[key]
+		return ok
+	}
+
+	closeness := 0
+	for i := range robots {
+		neighbours := getRobotNeighbours(robots[i])
+		for _, neighbour := range neighbours {
+			neighbourKey := buildKey(neighbour)
+			if inMap(neighbourKey) {
+				closeness += posMap[buildKey(neighbour)]
+			}
+		}
+	}
+	return closeness
+}
+
+func getRobotNeighbours(robot Robot) []Robot {
+	neighbours := make([]Robot, 8)
+	neighbours[0] = Robot{PosRow: robot.PosRow, PosCol: robot.PosCol - 1, VelRow: 0, VelCol: 0}
+	neighbours[1] = Robot{PosRow: robot.PosRow, PosCol: robot.PosCol + 1, VelRow: 0, VelCol: 0}
+
+	neighbours[2] = Robot{PosRow: robot.PosRow - 1, PosCol: robot.PosCol, VelRow: 0, VelCol: 0}
+	neighbours[3] = Robot{PosRow: robot.PosRow + 1, PosCol: robot.PosCol, VelRow: 0, VelCol: 0}
+
+	neighbours[4] = Robot{PosRow: robot.PosRow - 1, PosCol: robot.PosCol - 1, VelRow: 0, VelCol: 0}
+	neighbours[5] = Robot{PosRow: robot.PosRow - 1, PosCol: robot.PosCol + 1, VelRow: 0, VelCol: 0}
+
+	neighbours[6] = Robot{PosRow: robot.PosRow + 1, PosCol: robot.PosCol - 1, VelRow: 0, VelCol: 0}
+	neighbours[7] = Robot{PosRow: robot.PosRow + 1, PosCol: robot.PosCol + 1, VelRow: 0, VelCol: 0}
+	return neighbours
+}
+
 func removeCrossItems(m *Matrix[string]) {
 	rows := m.Rows()
 	cols := m.Cols()
@@ -157,17 +197,36 @@ func NewEmptyMatrix[T any](value T, rows int, cols int) Matrix[T] {
 }
 
 func solutionPart02(lines []string) {
-	count := 0
-	fmt.Printf("%d", count)
+	robots, m := readInput(lines, 103, 101)
+
+	rows := m.Rows()
+	cols := m.Cols()
+
+	iterNumber := 10000
+	maxCloseness := 0
+
+	for iter := 1; iter <= iterNumber; iter++ {
+		for i := range robots {
+			updateRobotPosition(&robots[i], rows, cols)
+		}
+		closeness := closenessMetric(robots)
+		if closeness > maxCloseness {
+			fmt.Printf("iter: %d, closeness: %d, max-closeness: %d\n", iter, closeness, maxCloseness)
+			m = buildMatrixFromRobots(robots, rows, cols)
+			PrintStrMatrix(m)
+			maxCloseness = closeness
+		}
+	}
+
+	fmt.Printf("%d", iterNumber)
 }
 
 // https://adventofcode.com/2024/day/14
 func main() {
 	// part 01: using string or input file
 	//RunAdventOfCodeWithString(solutionPart01, "p=0,4 v=3,-3\np=6,3 v=-1,-3\np=10,3 v=-1,2\np=2,0 v=2,-1\np=0,0 v=1,3\np=3,0 v=-2,-2\np=7,6 v=-1,-3\np=3,0 v=-1,-2\np=9,3 v=2,3\np=7,3 v=-1,2\np=2,4 v=2,-3\np=9,5 v=-3,-3")
-	RunAdventOfCodeWithFile(solutionPart01, "day_14/testcases/input-part-01.txt")
+	//RunAdventOfCodeWithFile(solutionPart01, "day_14/testcases/input-part-01.txt")
 
 	// part 02: using string or input file
-	//RunAdventOfCodeWithString(solutionPart02, "")
-	//RunAdventOfCodeWithFile(solutionPart02, "day_14/testcases/input-part-02.txt")
+	RunAdventOfCodeWithFile(solutionPart02, "day_14/testcases/input-part-02.txt")
 }
