@@ -19,14 +19,6 @@ func solutionPart01(lines []string) {
 				node01 := antenna.List[i]
 				node02 := antenna.List[j]
 
-				if Abs(node02.Row, node01.Row) == 0 {
-					continue
-				}
-
-				if Abs(node02.Col, node01.Col) == 0 {
-					continue
-				}
-
 				var antinode01 Node[string]
 				var antinode02 Node[string]
 
@@ -65,15 +57,18 @@ func solutionPart01(lines []string) {
 		}
 	}
 
+	PrintStrMatrix(m)
+	for key, antinode := range antinodes {
+		fmt.Printf("%v->%v\n", key, antinode)
+		m[antinode.Row][antinode.Col].Value = antinode.Value
+	}
+	PrintStrMatrix(m)
+
 	fmt.Printf("%d\n", len(antinodes))
 }
 
 func buildKey(node Node[string]) string {
 	return FormatInt(node.Row) + "|" + FormatInt(node.Col)
-}
-
-func buildKeyWithAntenna(node Node[string], antennaType string) string {
-	return FormatInt(node.Row) + "|" + FormatInt(node.Col) //+ "|" + antennaType
 }
 
 func readInput(lines []string) (map[string]AntennaSet, Matrix[string]) {
@@ -107,10 +102,11 @@ func readInput(lines []string) (map[string]AntennaSet, Matrix[string]) {
 	return antennas, m
 }
 
+// NOT WORKING
 func solutionPart02(lines []string) {
 	antennas, m := readInput(lines)
 	antinodes := make(map[string]Node[string])
-	//antennasAntiNode := make(map[string]Node[string])
+
 	for _, antenna := range antennas {
 		for i := 0; i < len(antenna.List)-1; i++ {
 			for j := i + 1; j < len(antenna.List); j++ {
@@ -128,7 +124,7 @@ func solutionPart02(lines []string) {
 						Col:   node01.Col - Abs(node02.Col, node01.Col),
 					}
 					if m.IsValid(antinode01) {
-						antinodes[buildKeyWithAntenna(antinode01, antenna.AntennaType)] = antinode01
+						antinodes[buildKey(antinode01)] = antinode01
 						// add # as many at top+left
 						top, bottom := clone(antinode01), clone(node01)
 						potential := Node[string]{
@@ -137,7 +133,7 @@ func solutionPart02(lines []string) {
 							Col:   top.Col - Abs(bottom.Col, top.Col),
 						}
 						for m.IsValid(potential) {
-							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
+							antinodes[buildKey(potential)] = potential
 							top, bottom = clone(potential), clone(top)
 							potential = Node[string]{
 								Value: "#",
@@ -154,7 +150,7 @@ func solutionPart02(lines []string) {
 						Col:   node02.Col + Abs(node02.Col, node01.Col),
 					}
 					if m.IsValid(antinode02) {
-						antinodes[buildKeyWithAntenna(antinode02, antenna.AntennaType)] = antinode02
+						antinodes[buildKey(antinode02)] = antinode02
 						// add # as many at bottom+right
 						top, bottom := clone(node02), clone(antinode02)
 						potential := Node[string]{
@@ -163,7 +159,7 @@ func solutionPart02(lines []string) {
 							Col:   bottom.Col + Abs(bottom.Col, top.Col),
 						}
 						for m.IsValid(potential) {
-							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
+							antinodes[buildKey(potential)] = potential
 							top, bottom = clone(bottom), clone(potential)
 							potential = Node[string]{
 								Value: "#",
@@ -181,7 +177,7 @@ func solutionPart02(lines []string) {
 						Col:   node01.Col + Abs(node02.Col, node01.Col),
 					}
 					if m.IsValid(antinode01) {
-						antinodes[buildKeyWithAntenna(antinode01, antenna.AntennaType)] = antinode01
+						antinodes[buildKey(antinode01)] = antinode01
 						// at many at right+top
 						top, bottom := clone(antinode01), clone(node01)
 						potential := Node[string]{
@@ -190,7 +186,7 @@ func solutionPart02(lines []string) {
 							Col:   top.Col + Abs(bottom.Col, top.Col),
 						}
 						for m.IsValid(potential) {
-							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
+							antinodes[buildKey(potential)] = potential
 							top, bottom = clone(potential), clone(top)
 							potential = Node[string]{
 								Value: "#",
@@ -206,7 +202,7 @@ func solutionPart02(lines []string) {
 						Col:   node02.Col - Abs(node02.Col, node01.Col),
 					}
 					if m.IsValid(antinode02) {
-						antinodes[buildKeyWithAntenna(antinode02, antenna.AntennaType)] = antinode02
+						antinodes[buildKey(antinode02)] = antinode02
 						// at many at left+bottom
 						top, bottom := clone(node02), clone(antinode02)
 						potential := Node[string]{
@@ -215,7 +211,7 @@ func solutionPart02(lines []string) {
 							Col:   bottom.Col - Abs(bottom.Col, top.Col),
 						}
 						for m.IsValid(potential) {
-							antinodes[buildKeyWithAntenna(potential, antenna.AntennaType)] = potential
+							antinodes[buildKey(potential)] = potential
 							top, bottom = clone(bottom), clone(potential)
 							potential = Node[string]{
 								Value: "#",
@@ -229,17 +225,19 @@ func solutionPart02(lines []string) {
 		}
 	}
 
-	// finding extra
-	PrintStrMatrix(m)
-	for _, antinode := range antinodes {
-		fmt.Printf("%v\n", antinode)
-		m[antinode.Row][antinode.Col].Value = antinode.Value
+	// counting antennas as well as antinodes
+	for _, antenna := range antennas {
+		for i := range antenna.List {
+			//antennasCount += len(antenna.List)
+			potential := Node[string]{
+				Value: antenna.List[i].Value,
+				Row:   antenna.List[i].Row,
+				Col:   antenna.List[i].Col,
+			}
+			antinodes[buildKey(potential)] = potential
+		}
 	}
-	PrintStrMatrix(m)
-
 	fmt.Printf("%d\n", len(antinodes))
-	//fmt.Printf("%d\n", extraCounter)
-	//fmt.Printf("%d\n", len(antinodes)+extraCounter)
 }
 
 func clone(node Node[string]) Node[string] {
@@ -253,10 +251,10 @@ func clone(node Node[string]) Node[string] {
 // https://adventofcode.com/2024/day/8
 func main() {
 	// part 01: using string or input file
-	//RunAdventOfCodeWithString(solutionPart01, "............\n........0...\n.....0......\n.......0....\n....0.......\n......A.....\n............\n............\n........A...\n.........A..\n............\n............")
-	//RunAdventOfCodeWithFile(solutionPart01, "day_08/TESTCASES/input-part-01.txt")
+	//RunAdventOfCodeWithString(solutionPart01, "............\n............\n............\n............\n......A.....\n............\n............\n............\n............\n............\n............")
+	//RunAdventOfCodeWithFile(solutionPart01, "day_08/testcases/input-part-01.txt")
 
 	// part 02: using string or input file
-	RunAdventOfCodeWithString(solutionPart02, "............\n........0...\n.....0......\n.......0....\n....0.......\n......A.....\n............\n............\n........A...\n.........A..\n............\n............")
-	//RunAdventOfCodeWithFile(solutionPart02, "day_08/testcases/input-part-02.txt")
+	//RunAdventOfCodeWithString(solutionPart02, "............\n........0...\n.....0......\n.......0....\n....0.......\n......A.....\n............\n............\n........A...\n.........A..\n............\n............")
+	RunAdventOfCodeWithFile(solutionPart02, "day_08/testcases/input-part-02.txt")
 }
