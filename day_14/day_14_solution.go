@@ -182,11 +182,11 @@ func buildKey(robot Robot) string {
 }
 
 func NewEmptyMatrix[T any](value T, rows int, cols int) Matrix[T] {
-	matrix := make([][]Node[T], rows)
+	matrix := make([][]Cell[T], rows)
 	for i := 0; i < rows; i++ {
-		matrix[i] = make([]Node[T], cols)
+		matrix[i] = make([]Cell[T], cols)
 		for j := 0; j < cols; j++ {
-			matrix[i][j] = Node[T]{
+			matrix[i][j] = Cell[T]{
 				Value: value,
 				Row:   i,
 				Col:   j,

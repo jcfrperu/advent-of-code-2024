@@ -68,8 +68,6 @@ func readInput(lines []string) []string {
 func solutionPart02(lines []string) {
 	result := readInput(lines)
 
-	fmt.Printf("%s\n", result)
-
 	right := len(result) - 1
 
 	for right > 0 {
@@ -86,8 +84,6 @@ func solutionPart02(lines []string) {
 			startOccupiedSpace--
 		}
 		startOccupiedSpace++
-		fmt.Printf("PROCESSING --> %s\n", data)
-		fmt.Printf("RIGHT(%d,%d): %d\n", startOccupiedSpace, right, occupiedSpace)
 
 		// find a free block  to swap
 		left := -1

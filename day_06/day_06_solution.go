@@ -55,7 +55,7 @@ func solutionPart02(lines []string) {
 	fmt.Printf("%d", loopsCounter)
 }
 
-func isLoop(m Matrix[string], node Node[string]) bool {
+func isLoop(m Matrix[string], node Cell[string]) bool {
 	routes := make(map[string]int)
 	routes[getPosKey(node)]++
 
@@ -79,15 +79,15 @@ func isLoop(m Matrix[string], node Node[string]) bool {
 	return false
 }
 
-func getPosKey(node Node[string]) string {
+func getPosKey(node Cell[string]) string {
 	return FormatInt(node.Row) + "|" + FormatInt(node.Col)
 }
 
-func getPosAndDirKey(node Node[string]) string {
+func getPosAndDirKey(node Cell[string]) string {
 	return FormatInt(node.Row) + "|" + FormatInt(node.Col) + "|" + node.Value
 }
 
-func turn90(node Node[string]) Node[string] {
+func turn90(node Cell[string]) Cell[string] {
 	if node.Value == "^" {
 		return node.Update(">")
 	}
@@ -103,7 +103,7 @@ func turn90(node Node[string]) Node[string] {
 	return node
 }
 
-func peek(node Node[string], m Matrix[string]) Node[string] {
+func peek(node Cell[string], m Matrix[string]) Cell[string] {
 	if node.Value == "^" {
 		return m.GetUp(node)
 	}
@@ -121,7 +121,7 @@ func peek(node Node[string], m Matrix[string]) Node[string] {
 	return node
 }
 
-func move(node Node[string], m Matrix[string]) Node[string] {
+func move(node Cell[string], m Matrix[string]) Cell[string] {
 	if node.Value == "^" {
 		return m.GetUp(node).Update(node.Value)
 	}
@@ -140,16 +140,16 @@ func move(node Node[string], m Matrix[string]) Node[string] {
 	return node
 }
 
-func findStartNode(m Matrix[string]) Node[string] {
+func findStartNode(m Matrix[string]) Cell[string] {
 	rows := m.Rows()
 	cols := m.Cols()
 
-	startPoint := Node[string]{}
+	startPoint := Cell[string]{}
 
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
 			if m[i][j].Value == "^" {
-				startPoint = Node[string]{
+				startPoint = Cell[string]{
 					Value: m[i][j].Value,
 					Row:   i,
 					Col:   j,
